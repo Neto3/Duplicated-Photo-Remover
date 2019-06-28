@@ -1,16 +1,43 @@
 #include <Array.au3>
 #include <Date.au3>
+#include <File.au3>
 #include <GDIPlus.au3>
 
-$photo_1 = FileOpenDialog('', @WindowsDir & "\", "All (*.*)", $FD_FILEMUSTEXIST)
+$dir = FileSelectFolder ("", "c:")
 
-$capture_time_1 = StringReplace(getPhotoCaptureTime($photo_1), ":", "/", 2)
+$dir_2 = $dir & '\2'
+If FileExists($dir_2) == 0 Then
+	DirCreate($dir_2)
+EndIf
 
-$photo_2 = FileOpenDialog('', @WindowsDir & "\", "All (*.*)", $FD_FILEMUSTEXIST)
+$files = _FileListToArray($dir)
 
-$capture_time_2 = StringReplace(getPhotoCaptureTime($photo_2), ":", "/", 2)
+For $i = 1 To $files[0] - 1
 
-$time_diff = _DateDiff('s', $capture_time_1, $capture_time_2)
+	$file_1 = $dir & '\' & $files[$i]
+	$file_2 = $dir & '\' & $files[$i+1]
+
+	If StringInStr($file_1, 'jpg', 0) > 0 And StringInStr($file_2, 'jpg', 0) > 0 Then
+
+		$time_diff = comparePhotoCaptureTimes($file_1, $file_2)
+
+		MsgBox(0, '', $time_diff)
+
+	EndIf
+
+Next
+
+Func comparePhotoCaptureTimes($photo_1, $photo_2)
+
+	$capture_time_1 = StringReplace(getPhotoCaptureTime($photo_1), ":", "/", 2)
+
+	$capture_time_2 = StringReplace(getPhotoCaptureTime($photo_2), ":", "/", 2)
+
+	$time_diff = _DateDiff('s', $capture_time_1, $capture_time_2)
+
+	Return $time_diff
+
+EndFunc
 
 
 Func getPhotoCaptureTime($photo)
