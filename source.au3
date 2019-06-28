@@ -1,9 +1,17 @@
 #include <Array.au3>
+#include <Date.au3>
 #include <GDIPlus.au3>
 
-$photo = FileOpenDialog('', @WindowsDir & "\", "All (*.*)", $FD_FILEMUSTEXIST)
+$photo_1 = FileOpenDialog('', @WindowsDir & "\", "All (*.*)", $FD_FILEMUSTEXIST)
 
-getPhotoCaptureTime($photo)
+$capture_time_1 = StringReplace(getPhotoCaptureTime($photo_1), ":", "/", 2)
+
+$photo_2 = FileOpenDialog('', @WindowsDir & "\", "All (*.*)", $FD_FILEMUSTEXIST)
+
+$capture_time_2 = StringReplace(getPhotoCaptureTime($photo_2), ":", "/", 2)
+
+$time_diff = _DateDiff('s', $capture_time_1, $capture_time_2)
+
 
 Func getPhotoCaptureTime($photo)
 
@@ -22,6 +30,6 @@ Func getPhotoCaptureTime($photo)
 	_GDIPlus_ImageDispose($photo)
 	_GDIPlus_Shutdown()
 
-	Return $capture_time[0]
+	Return $capture_time[1]
 
 EndFunc
