@@ -21,7 +21,13 @@ For $i = 1 To $files[0] - 1
 
 		$time_diff = comparePhotoCaptureTimes($file_1, $file_2)
 
-		MsgBox(0, '', $time_diff)
+		If $time_diff <= 2 Then
+
+			FileMove($file_2, $dir_2 & '\' & $files[$i+1])
+
+			$i = $i + 1
+
+		EndIf
 
 	EndIf
 
@@ -35,20 +41,20 @@ Func comparePhotoCaptureTimes($photo_1, $photo_2)
 
 	$time_diff = _DateDiff('s', $capture_time_1, $capture_time_2)
 
-	Return $time_diff
+	Return Abs($time_diff)
 
 EndFunc
 
 
-Func getPhotoCaptureTime($photo)
+Func getPhotoCaptureTime($file)
 
 	_GDIPlus_Startup()
 
-	$photo = _GDIPlus_ImageLoadFromFile($photo)
+	$photo = _GDIPlus_ImageLoadFromFile($file)
 
 	If @error Then
 		_GDIPlus_Shutdown()
-		MsgBox(16, "", "An error has occured - unable to load image!", 30)
+		MsgBox(16, "", "An error has occured - unable to load image!" & $file, 30)
 		Return False
 	EndIf
 
